@@ -1,0 +1,11 @@
+<!doctype html>
+<title>Crear Reporte</title>
+<h1>Crear Reporte para Cliente {{ client_id }}</h1>
+<form method="post">
+    <label for="title">Título:</label><br>
+    <input type="text" id="title" name="title"><br><br>
+    <label for="content">Contenido:</label><br>
+    <textarea id="content" name="content" rows="10" cols="50"></textarea><br><br>
+    <input type="submit" value="Generar PDF">
+</form>
+<a href="/">Volver</a>
