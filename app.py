@@ -156,7 +156,7 @@ def timeline():
     tickets = Ticket.query.all()
     if request.method == "POST":
     tickets = Ticket.query.all()
-                if file and file.filename) and not allowed_file(file.filename)):
+                if file and file.filename and not allowed_file(file.filename)):
             return render_template("timeline.html", events=IncidentEvent.query.order_by(IncidentEvent.timestamp.desc()).all(), tickets=tickets, error="File type not allowed.")
         file = request.files.get("evidence")
         filename = None
