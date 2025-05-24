@@ -1,93 +1,58 @@
-# SIAM - SOC Incident & Alert Manager (MVP)
+# OBSERVA - SOC Incident & Alert Manager (SIAM)
 
-**SIAM** es una aplicación web ligera desarrollada en Flask para equipos SOC (Security Operations Center). Permite crear reportes en PDF de eventos o alertas de seguridad para clientes, y llevar un historial de reportes enviados.
+**OBSERVA** is a lightweight open
+![Python Version](https://img.shields.io/badge/python-3.12-blue)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Fredyp/Observa-SIAM)
+![GitHub last commit](https://img.shields.io/github/last-commit/Fredyp/Observa-SIAM)
+![GitHub issues](https://img.shields.io/github/issues/Fredyp/Observa-SIAM)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Fredyp/Observa-SIAM)
+ source web application designed to help Security Operations Center (SOC) teams manage alerts, incidents, and client reporting workflows with efficiency and transparency.
 
-> 🧪 Este es un MVP (Producto Mínimo Viable). Fue diseñado para ser funcional, simple y servir de base para agregar nuevas características como autenticación, calendario, y más.
+## 🚀 Core Features
+- Web-based interface styled with [Milligram CSS](https://milligram.io/) for a minimalist responsive design
+- Client management and alert tracking
+- Calendar-based email log tracking per client
+- PDF report generation
+- Email delivery system
+- Modular structure for extensibility
 
----
+## 🛠 Tech Stack
+- Python 3.x
+- Flask
+- Jinja2
+- SQLite
+- pdfkit & wkhtmltopdf (for PDF generation)
+- Milligram (CSS framework)
 
-## ✨ Características
-
-- Gestión de clientes (nombre, contacto de email)
-- Creación de reportes en formato PDF por cliente
-- Plantillas HTML listas para personalizar
-- Generación de historial de envíos
-- Aplicación ligera, ideal para servidores con pocos recursos
-
----
-
-## 🧰 Requisitos
-
-- Ubuntu 20.04 o superior
-- Python 3.10+
-- 2 CPU y 1 GB RAM mínimo
-- Acceso a Internet para instalar dependencias
-
----
-
-## 🚀 Instalación rápida
-
+## 🔧 Setup Instructions
 ```bash
-# 1. Clona el repositorio o descarga el ZIP
-git clone https://github.com/tuusuario/siam_webapp.git
-cd siam_webapp
-
-# 2. Da permisos y ejecuta el instalador
-chmod +x install.sh
-./install.sh
-
-# 3. Activa el entorno virtual
-source venv/bin/activate
-
-# 4. Ejecuta la aplicación
-flask run --host=0.0.0.0 --port=5000
+git clone https://github.com/Fredyp/Observa-SIAM.git
+cd Observa-SIAM
+bash scripts/install.sh
 ```
 
-La aplicación estará disponible en `http://<IP_DE_TU_SERVIDOR>:5000`.
+## 🙌 Author
+Created by [Fredy Peralta](https://www.linkedin.com/in/fredyperaltagaleano/)
 
 ---
 
-## 📝 Estructura del proyecto
+## ✅ Requirements
 
-```
-siam_webapp/
-├── app.py                  # Aplicación principal Flask
-├── install.sh              # Instalador de dependencias y PDFKit
-├── requirements.txt        # Dependencias de Python
-├── templates/
-│   ├── index.html
-│   ├── create_report.html
-│   └── report_template.html
-├── static/                 # (opcional para CSS)
-├── reports/                # Carpeta para los PDFs generados
-└── README.md
-```
+- Python 3.10+
+- pip
+- wkhtmltopdf installed and available in PATH (for PDF generation)
+- Linux/Ubuntu-based environment recommended
+- Docker (optional, for containerized deployments)
 
 ---
 
-## 🔧 Próximas funciones (roadmap)
+## 🗺 Roadmap
 
-- [ ] Autenticación de usuarios (login/logout)
-- [ ] Sistema de historial y calendario de envíos
-- [ ] Clasificación de alertas por tipo (Malware, Phishing, etc.)
-- [ ] Envío automatizado de reportes por email
-- [ ] KPIs del SOC en tiempo real
-- [ ] Dockerfile para contenedorizar la aplicación
-
----
-
-## 📖 Licencia
-
-Este proyecto es open-source y se publica bajo la licencia [MIT](LICENSE).
-
----
-
-## 🤝 Contribuciones
-
-¡Contribuciones son bienvenidas! Si tienes ideas o mejoras, por favor crea un issue o un pull request.
-
----
-
-## 🙌 Autor
-
-Desarrollado por un analista SOC con experiencia práctica en gestión de alertas, incidentes y necesidades reales del equipo.
+- [x] MVP release with PDF generation and client alert tracking
+- [ ] Add user authentication
+- [ ] Add role-based access control (RBAC)
+- [ ] Implement API for integration with SIEM
+- [ ] Alert classification by severity
+- [ ] Email delivery and scheduling system
+- [ ] Real-time dashboard with alert KPIs
+- [ ] Docker and Kubernetes deployment support
