@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Incident Timeline</title>
+  <link rel="stylesheet" href="/static/css/milligram.min.css">
+</head>
+<body>
+<main class="container">
+  <h2>Incident Timeline</h2>
+  {% if error %}<p style='color:red;'>{{ error }}</p>{% endif %}
+<form method="POST" enctype="multipart/form-data" style="margin-bottom:20px;">
+    <label for="ticket_id">Select Ticket</label>
+    <select name="ticket_id" required>
+      {% for ticket in tickets %}
+      <option value="{{ ticket.id }}">{{ ticket.title }}</option>
+      {% endfor %}
+    </select>
+    <label>Event Description</label>
+    <textarea name="description" required></textarea>
+    <label>Attach Evidence</label>
+    <input type="file" name="evidence">
+    <button type="submit" class="button-primary">Add Event</button>
+  </form>
+
+  {% for event in events %}
+  <blockquote>
+    <strong>{{ event.timestamp.strftime('%Y-%m-%d %H:%M') }}</strong><br>
+    {{ event.description }}<br><small>Uploaded by: {{ event.uploaded_by }}</small><br>
+    <em>Ticket ID: {{ event.ticket_id }}</em>
+  {% if event.evidence %}<br><a href="/static/uploads/{{ event.evidence }}">📎 {{ event.evidence }}</a>{% endif %}</blockquote>
+  {% endfor %}
+</main>
+</body>
+</html>

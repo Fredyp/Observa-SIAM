@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - OBSERVA</title>
+  <link rel="stylesheet" href="/static/css/milligram.min.css">
+</head>
+<body>
+<main class="container">
+  <h2>Dashboard</h2>
+  <div style="display:flex; gap: 20px;">
+    <div>
+      <h4>Total Tickets</h4>
+      <p><strong>{{ total }}</strong></p>
+    </div>
+    <div>
+      <h4>Open Tickets</h4>
+      <p><strong>{{ open }}</strong></p>
+    </div>
+    <div>
+      <h4>Closed Tickets</h4>
+      <p><strong>{{ closed }}</strong></p>
+    </div>
+    <div>
+      <h4>MTTR (days)</h4>
+      <p><strong>{{ mttr }}</strong></p>
+    </div>
+  </div>
+
+  <h4 style="margin-top: 30px;">Tickets by Category</h4>
+  <table>
+    <thead><tr><th>Category</th><th>Count</th></tr></thead>
+    <tbody>
+      {% for cat, count in category_counts %}
+      <tr><td>{{ cat }}</td><td>{{ count }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

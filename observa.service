@@ -1,0 +1,13 @@
+[Unit]
+Description=OBSERVA - SOC Alert Manager WebApp
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/opt/observa
+ExecStart=/opt/observa/venv/bin/python app.py
+Restart=always
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

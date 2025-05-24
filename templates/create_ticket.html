@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Ticket</title>
+  <link rel="stylesheet" href="/static/css/milligram.min.css">
+</head>
+<body>
+<main class="container" style="max-width:600px;">
+  <h2>Create New Ticket</h2>
+  <form method="POST">
+    <label>Title</label>
+    <input type="text" name="title" required>
+    <label>Description</label>
+    <textarea name="description" required></textarea>
+    <label>Category</label>
+    <select name="category">
+      <option value="phishing">Phishing</option>
+      <option value="malware">Malware</option>
+      <option value="insider">Insider Threat</option>
+      <option value="ddos">DDoS</option>
+      <option value="unauthorized">Unauthorized Access</option>
+    </select>
+
+    <label>Severity</label>
+    <select name="severity">
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+      <option value="critical">Critical</option>
+    </select>
+
+    <label>Status</label>
+    <select name="status">
+      <option>received</option>
+      <option>analyzed</option>
+      <option>escalated</option>
+      <option>resolved</option>
+      <option>closed</option>
+    </select>
+    <button class="button-primary" type="submit">Submit</button>
+  </form>
+</main>
+</body>
+</html>

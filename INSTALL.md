@@ -1,60 +1,46 @@
-# 📦 Installation Guide – OBSERVA
+# 📦 OBSERVA Installation Guide
 
-This guide walks you through setting up OBSERVA on a local server.
+This guide installs and runs OBSERVA on a fresh Ubuntu server.
 
 ---
 
-## ✅ Prerequisites
+## 🔧 Requirements
 
 - Python 3.10+
 - pip
-- wkhtmltopdf (`sudo apt install wkhtmltopdf`)
-- git (optional)
+- wkhtmltopdf (for PDF reports)
+- unzip
 
 ---
 
-## ⚙️ Installation
-
-### 1. Clone or extract the project
+## 🚀 Steps
 
 ```bash
-unzip OBSERVA_v1.0.0_release.zip
+unzip OBSERVA.zip
 cd OBSERVA_webapp_v1_release
-```
 
-### 2. Set up a virtual environment
-
-```bash
+# Create virtual environment
 python3 -m venv venv
 source venv/bin/activate
-```
 
-### 3. Install dependencies
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
-### 4. Run the app
-
-```bash
-bash run.sh
-```
-
-Then visit: `http://<your-server-ip>:5000`
-
----
-
-## 🧪 Optional
-
-To enable PDF generation:
-
-```bash
-sudo apt install wkhtmltopdf
+# Launch (development mode)
+flask run --host=0.0.0.0 --port=5000
 ```
 
 ---
 
-## 🆘 Need help?
+## 🔐 Default Login
 
-Open an issue here: [https://github.com/Fredyp/Observa-SIAM/issues](https://github.com/Fredyp/Observa-SIAM/issues)
+- **User**: `admin`
+- **Pass**: `admin`
+
+Use `/register` to create more users.
+
+---
+
+## ⚙ Optional systemd setup
+
+Use `deploy.sh` to automate install + service creation.

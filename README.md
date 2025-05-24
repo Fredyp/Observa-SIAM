@@ -5,46 +5,41 @@
 ![Made with Flask](https://img.shields.io/badge/made%20with-Flask-blue)
 ![Uses Milligram](https://img.shields.io/badge/CSS%20Framework-Milligram-lightgrey)
 ![Python Version](https://img.shields.io/badge/python-3.12-blue)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/Fredyp/Observa-SIAM)
-![GitHub last commit](https://img.shields.io/github/last-commit/Fredyp/Observa-SIAM)
-![GitHub issues](https://img.shields.io/github/issues/Fredyp/Observa-SIAM)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/Fredyp/Observa-SIAM)
+
+![OBSERVA Logo](static/img/observa_logo.png)
 
 ---
 
-## ✅ Requirements
+## 🧩 Overview
 
-- Python 3.10+
-- pip
-- wkhtmltopdf installed and available in PATH (for PDF generation)
-- Linux/Ubuntu-based environment recommended
-- Docker (optional, for containerized deployments)
+**OBSERVA** is a lightweight SOC alert and report manager designed for security teams. Built with Flask, it supports user access, PDF reports, evidence tracking, and operational dashboards.
 
 ---
 
-## 🛠 Core Features
+## ✅ Features
 
-- Client management with email contact association.
-- Generate and download alert reports as PDF.
-- Logs reports into a calendar history.
-- Responsive UI with Milligram CSS.
-- Custom footer with author link.
+- 👥 Multi-user login with secure password hashing
+- 🧾 Ticket creation with status, category, and severity
+- 🕒 Incident timeline with evidence upload (PCAP, PDF, logs, etc.)
+- 📊 Dashboard metrics (Total/Open/Closed, MTTR, Category Breakdown)
+- 🎨 Responsive UI with Milligram CSS + branding
+- 🛡 Secure headers, session policies, filename sanitization
+- 📦 Automated deployment (`deploy.sh`) and systemd service
 
 ---
 
-## 🗺 Roadmap
+## 📂 Functional Pages
 
-- [x] MVP release with PDF generation and client alert tracking
-- [ ] Add user authentication
-- [ ] Role-based access control (RBAC)
-- [ ] API integration with external SIEM
-- [ ] Severity classification
-- [ ] Scheduled email delivery
-- [ ] Alert KPIs dashboard
-- [ ] Docker and K8s deployment support
+- `/login` – User login
+- `/register` – Admin-only user registration
+- `/tickets` – Ticket listing, creation, filters
+- `/timeline` – View incident timeline, upload evidence
+- `/dashboard` – Visual KPIs for SOC operations
 
 ---
 
 ## 📇 Author
 
-Created by [Fredy Peralta](https://www.linkedin.com/in/fredyperaltagaleano/)
+Developed by [Fredy Peralta](https://www.linkedin.com/in/fredyperaltagaleano/)
+
+---
