@@ -1,48 +1,65 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+from sqlalchemy import func
+from datetime import datetime
 import os
 import uuid
-from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+app.secret_key = 'observa_secret_key'  # Cambiar para producción
 
-# OWASP Top 10: Secure session and headers
+# Configuración OWASP básica
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['SESSION_COOKIE_SECURE'] = False  # Set True behind HTTPS
+app.config['SESSION_COOKIE_SECURE'] = False  # Cambiar a True si usás HTTPS
 
-MAX_UPLOAD_SIZE = 104857600  # 100 MB
+# Configuración de base de datos
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'observa.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
+# Configuración de archivos
+MAX_UPLOAD_SIZE = 104857600  # 100MB
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'txt', 'pcap', 'xml', 'csv'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-app.secret_key = 'observa_secret_key'  # Change for production
-
-# SQLite configuration
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'observa.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
-
-# User model
+# Modelos
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
+class Ticket(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(50), nullable=False)
+    created_by = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(100), nullable=True)
+    severity = db.Column(db.String(100), nullable=True)
+
+class IncidentEvent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ticket_id = db.Column(db.Integer, db.ForeignKey('ticket.id'), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    evidence = db.Column(db.String(200), nullable=True)
+    uploaded_by = db.Column(db.String(100), nullable=True)
+
 @app.before_first_request
 def create_tables():
     db.create_all()
-    # Create default admin user if not exists
     if not User.query.filter_by(username='admin').first():
         admin = User(username='admin', password=generate_password_hash('admin'))
         db.session.add(admin)
         db.session.commit()
 
+# Rutas
 @app.route('/')
 def index():
     if not session.get("user"):
@@ -52,7 +69,6 @@ def index():
 @app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-    tickets = Ticket.query.all()
         username = request.form.get("username")
         password = request.form.get("password")
         user = User.query.filter_by(username=username).first()
@@ -73,7 +89,6 @@ def register():
         return redirect(url_for("login"))
 
     if request.method == "POST":
-    tickets = Ticket.query.all()
         username = request.form.get("username")
         password = request.form.get("password")
         confirm = request.form.get("confirm")
@@ -91,18 +106,11 @@ def register():
 
     return render_template("register.html")
 
-class Ticket(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(150), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    status = db.Column(db.String(50), nullable=False)
-    created_by = db.Column(db.String(100), nullable=False)
-
 @app.route('/tickets')
 def tickets():
     if not session.get("user"):
         return redirect(url_for("login"))
-    
+
     category = request.args.get("category")
     severity = request.args.get("severity")
     query = Ticket.query.filter_by(created_by=session.get("user"))
@@ -111,7 +119,6 @@ def tickets():
     if severity:
         query = query.filter_by(severity=severity)
     ticket_list = query.all()
-
     return render_template("tickets.html", tickets=ticket_list)
 
 @app.route('/create_ticket', methods=["GET", "POST"])
@@ -119,11 +126,13 @@ def create_ticket():
     if not session.get("user"):
         return redirect(url_for("login"))
     if request.method == "POST":
-    tickets = Ticket.query.all()
-        new_ticket = Ticket(created_by=session.get("user"),
+        new_ticket = Ticket(
+            created_by=session.get("user"),
             title=request.form["title"],
             description=request.form["description"],
-            status=request.form["status"]
+            status=request.form["status"],
+            category=request.form.get("category"),
+            severity=request.form.get("severity")
         )
         db.session.add(new_ticket)
         db.session.commit()
@@ -139,36 +148,24 @@ def delete_ticket(id):
     db.session.commit()
     return redirect(url_for("tickets"))
 
-from datetime import datetime
-
-class IncidentEvent(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    ticket_id = db.Column(db.Integer, db.ForeignKey('ticket.id'), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    evidence = db.Column(db.String(200), nullable=True)
-    uploaded_by = db.Column(db.String(100), nullable=True)
-
 @app.route('/timeline', methods=["GET", "POST"])
 def timeline():
     if not session.get("user"):
         return redirect(url_for("login"))
     tickets = Ticket.query.all()
     if request.method == "POST":
-    tickets = Ticket.query.all()
-                if file and file.filename) and not allowed_file(file.filename)):
-            return render_template("timeline.html", events=IncidentEvent.query.order_by(IncidentEvent.timestamp.desc()).all(), tickets=tickets, error="File type not allowed.")
         file = request.files.get("evidence")
         filename = None
-        if file and file.filename) and allowed_file(file.filename)):
-            filename = f"{uuid.uuid4().hex}_" + secure_filename({file.filename)}"
+        if file and file.filename and allowed_file(file.filename):
+            filename = f"{uuid.uuid4().hex}_" + secure_filename(file.filename)
             if len(filename) > 200:
-            return render_template("timeline.html", events=IncidentEvent.query.order_by(IncidentEvent.timestamp.desc()).all(), tickets=tickets, error="Filename too long.")
-        if file.content_length and file.content_length > MAX_UPLOAD_SIZE:
-            return render_template("timeline.html", events=IncidentEvent.query.order_by(IncidentEvent.timestamp.desc()).all(), tickets=tickets, error="File exceeds 100MB limit.")
-        file.save(os.path.join("static/uploads", filename))
+                return render_template("timeline.html", events=IncidentEvent.query.order_by(IncidentEvent.timestamp.desc()).all(), tickets=tickets, error="Filename too long.")
+            if request.content_length and request.content_length > MAX_UPLOAD_SIZE:
+                return render_template("timeline.html", events=IncidentEvent.query.order_by(IncidentEvent.timestamp.desc()).all(), tickets=tickets, error="File exceeds 100MB limit.")
+            file.save(os.path.join("static/uploads", filename))
 
-        event = IncidentEvent(uploaded_by=session.get("user"),
+        event = IncidentEvent(
+            uploaded_by=session.get("user"),
             evidence=filename,
             ticket_id=request.form["ticket_id"],
             description=request.form["description"]
@@ -178,17 +175,6 @@ def timeline():
         return redirect(url_for("timeline"))
     events = IncidentEvent.query.order_by(IncidentEvent.timestamp.desc()).all()
     return render_template("timeline.html", events=events, tickets=tickets)
-
-@app.after_request
-def set_secure_headers(response):
-    response.headers['X-Frame-Options'] = 'DENY'
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['Content-Security-Policy'] = "default-src 'self'"
-    response.headers['Referrer-Policy'] = 'no-referrer'
-    return response
-
-from sqlalchemy import func
-from datetime import datetime
 
 @app.route('/dashboard')
 def dashboard():
@@ -211,3 +197,11 @@ def dashboard():
 
     category_counts = db.session.query(Ticket.category, func.count(Ticket.id)).group_by(Ticket.category).all()
     return render_template("dashboard.html", total=total, open=open, closed=closed, mttr=mttr, category_counts=category_counts)
+
+@app.after_request
+def set_secure_headers(response):
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['Content-Security-Policy'] = "default-src 'self'"
+    response.headers['Referrer-Policy'] = 'no-referrer'
+    return response
