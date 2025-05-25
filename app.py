@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -51,13 +52,15 @@ class IncidentEvent(db.Model):
     evidence = db.Column(db.String(200), nullable=True)
     uploaded_by = db.Column(db.String(100), nullable=True)
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-    if not User.query.filter_by(username='admin').first():
-        admin = User(username='admin', password=generate_password_hash('admin'))
-        db.session.add(admin)
-        db.session.commit()
+@app.before_request
+def create_tables_once():
+    if not hasattr(app, '_tables_created'):
+        db.create_all()
+        if not User.query.filter_by(username='admin').first():
+            admin = User(username='admin', password=generate_password_hash('admin'))
+            db.session.add(admin)
+            db.session.commit()
+        app._tables_created = True
 
 # Rutas
 @app.route('/')
