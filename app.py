@@ -52,7 +52,7 @@ def index():
 @app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        tickets = Ticket.query.all()
+    tickets = Ticket.query.all()
         username = request.form.get("username")
         password = request.form.get("password")
         user = User.query.filter_by(username=username).first()
@@ -73,7 +73,7 @@ def register():
         return redirect(url_for("login"))
 
     if request.method == "POST":
-        tickets = Ticket.query.all()
+    tickets = Ticket.query.all()
         username = request.form.get("username")
         password = request.form.get("password")
         confirm = request.form.get("confirm")
@@ -119,7 +119,7 @@ def create_ticket():
     if not session.get("user"):
         return redirect(url_for("login"))
     if request.method == "POST":
-        tickets = Ticket.query.all()
+    tickets = Ticket.query.all()
         new_ticket = Ticket(created_by=session.get("user"),
             title=request.form["title"],
             description=request.form["description"],
@@ -155,15 +155,15 @@ def timeline():
         return redirect(url_for("login"))
     tickets = Ticket.query.all()
     if request.method == "POST":
-        tickets = Ticket.query.all()
-        if file and file.filename and not allowed_file(file.filename):
+    tickets = Ticket.query.all()
+                if file and file.filename) and not allowed_file(file.filename)):
             return render_template("timeline.html", events=IncidentEvent.query.order_by(IncidentEvent.timestamp.desc()).all(), tickets=tickets, error="File type not allowed.")
         file = request.files.get("evidence")
-        if file and file.filename and allowed_file(file.filename):
-            filename = f"{uuid.uuid4().hex}_" + secure_filename(file.filename)
-            filename = f"{uuid.uuid4().hex}_" + secure_filename(file.filename)
+        filename = None
+        if file and file.filename) and allowed_file(file.filename)):
+            filename = f"{uuid.uuid4().hex}_" + secure_filename({file.filename)}"
             if len(filename) > 200:
-                return render_template("timeline.html", events=IncidentEvent.query.order_by(IncidentEvent.timestamp.desc()).all(), tickets=tickets, error="Filename too long.")
+            return render_template("timeline.html", events=IncidentEvent.query.order_by(IncidentEvent.timestamp.desc()).all(), tickets=tickets, error="Filename too long.")
         if file.content_length and file.content_length > MAX_UPLOAD_SIZE:
             return render_template("timeline.html", events=IncidentEvent.query.order_by(IncidentEvent.timestamp.desc()).all(), tickets=tickets, error="File exceeds 100MB limit.")
         file.save(os.path.join("static/uploads", filename))
