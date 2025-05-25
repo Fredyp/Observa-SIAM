@@ -1,19 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Observa - SOC Incident & Alert Manager</title>
-    <link rel="stylesheet" href="/static/css/milligram.min.css">
-    <link rel="stylesheet" href="/static/css/custom.css">
-</head>
-<body>
-    <img src="/static/img/observa_logo.png" alt="OBSERVA Logo" style="max-width: 120px; display: block; margin: 20px auto;">
-<main class="container">
-        <h1>Welcome to Observa</h1>
-        <p>Your SOC alert manager dashboard.</p>
-    </main>
-    <footer>
-        <p style="text-align:center">Created by <a href="https://www.linkedin.com/in/fredyperaltagaleano/" target="_blank">Fredy Peralta</a></p>
-    </footer>
-</body>
-</html>
+
+{% extends "base.html" %}
+
+{% block content %}
+    <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Observa Logo">
+    <h2>Welcome to Observa</h2>
+    <p>Your SOC alert manager dashboard.</p>
+{% endblock %}

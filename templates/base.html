@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Observa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
+    <style>
+        body {
+            margin: 2rem;
+            background-color: #f4f4f4;
+        }
+        nav {
+            background-color: #2e2e2e;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        nav a {
+            color: #ffffff;
+            margin-right: 1rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            margin-top: 2rem;
+            font-size: 0.9em;
+            color: #888;
+            text-align: center;
+        }
+        .logo {
+            max-width: 200px;
+            display: block;
+            margin: 0 auto 2rem;
+        }
+    </style>
+</head>
+<body>
+
+{% if session.get("user") %}
+<nav>
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('tickets') }}">Tickets</a>
+    <a href="{{ url_for('create_ticket') }}">Create Ticket</a>
+    <a href="{{ url_for('timeline') }}">Timeline</a>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</nav>
+{% endif %}
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    Created by <a href="https://www.linkedin.com/in/fredyperaltagaleano/" target="_blank">Fredy Peralta</a>
+</footer>
+
+</body>
+</html>
